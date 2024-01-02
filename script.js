@@ -9,6 +9,7 @@ after each step each, the distance between each point must be the same as the pr
 */
 /*
 delta based timing
+each point will also need a direction array
 */
 const canvas = document.getElementById("main-canvas")
 const ctx = canvas.getContext("2d")
@@ -18,7 +19,7 @@ const wormColor="white"
 const dotRadius = 2
 const segments = 100
 const segmentLength = 10
-const speed = 7.5
+const speed = 8
 const maxAngle =  45// -15, 15
 const initialAngleDiff = 10
 const body = [] // {point:{x, y}, angle}[]
@@ -30,6 +31,8 @@ canvas.addEventListener('mousemove', function(event) {
     mousePosition = getRelativeCanvasPosition(canvas, event);
 });
 resizeCanvas()
+
+new ResizeObserver(resizeCanvas).observe(mainContainer)
 
 generateWorm()
 gameLoop()
@@ -45,9 +48,12 @@ function gameLoop(){
 function update(){
     body[0].point =  moveTowards(body[0].point, mousePosition, speed)
     for(let i = 1; i < body.length; i++){
+        const oldPosition = body[i].point
         body[i].point = moveTowards(body[i].point, body[i-1].point, speed, segmentLength)
+        body[i].travelled = getDistanceBetweenPoints(oldPosition, body[i].point)
     }
 }
+
 
 function render(){
     clearCanvas()
@@ -56,6 +62,10 @@ function render(){
 }
 
 //////////////////////////////////////////////////////////////
+
+function getDistanceBetweenPoints(p1, p2){
+    return Math.sqrt((p1.x - p2.x)**2 + (p1.y - p2.y)**2)
+}
 
 function resizeCanvas(){
     canvas.width = mainContainer.clientWidth
@@ -138,9 +148,10 @@ function drawPoints(){
     for(let i = 0; i < body.length; i++){
         drawDot(body[i].point, dotRadius, wormColor)
         if(i == 0 || i == body.length-1) continue
-        const angleSpeedMultiplier = 1.5
+        const angleSpeedMultiplier = 0.9
         const baseAngle = calculateAngle(body[i-1].point, body[i+1].point) + Math.PI / 2 + degreesToRadians(body[i].angle)
-        const dum = bounceNumber(-maxAngle, maxAngle, body[i].angle + body[i].sign * initialAngleDiff / angleSpeedMultiplier, body[i].sign)
+        const angleToAdd = body[i].sign * initialAngleDiff * angleSpeedMultiplier
+        const dum = bounceNumber(-maxAngle, maxAngle, body[i].angle + angleToAdd, body[i].sign)
         body[i].angle = dum.value
         body[i].sign = dum.sign
         const tempMultiplier = 2
