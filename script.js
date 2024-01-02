@@ -16,10 +16,10 @@ const ctx = canvas.getContext("2d")
 
 const wormColor="white"
 const dotRadius = 2
-const segments = 40
+const segments = 100
 const segmentLength = 10
 const speed = 7.5
-const maxAngle = 30 // -15, 15
+const maxAngle =  45// -15, 15
 const initialAngleDiff = 10
 const body = [] // {point:{x, y}, angle}[]
 
@@ -138,8 +138,9 @@ function drawPoints(){
     for(let i = 0; i < body.length; i++){
         drawDot(body[i].point, dotRadius, wormColor)
         if(i == 0 || i == body.length-1) continue
+        const angleSpeedMultiplier = 1.5
         const baseAngle = calculateAngle(body[i-1].point, body[i+1].point) + Math.PI / 2 + degreesToRadians(body[i].angle)
-        const dum = bounceNumber(-maxAngle, maxAngle, body[i].angle + body[i].sign * initialAngleDiff / 1.5, body[i].sign)
+        const dum = bounceNumber(-maxAngle, maxAngle, body[i].angle + body[i].sign * initialAngleDiff / angleSpeedMultiplier, body[i].sign)
         body[i].angle = dum.value
         body[i].sign = dum.sign
         const tempMultiplier = 2
@@ -147,13 +148,19 @@ function drawPoints(){
         const segmentY1 = body[i].point.y + Math.sin(baseAngle) * segmentLength * tempMultiplier
         const segmentX2 = body[i].point.x - Math.cos(baseAngle) * segmentLength * tempMultiplier
         const segmentY2 = body[i].point.y - Math.sin(baseAngle) * segmentLength * tempMultiplier
-        drawSegment({x: segmentX1, y: segmentY1}, {x: segmentX2, y: segmentY2}, wormColor)
         const segmentX3 = segmentX1 + Math.cos(baseAngle + degreesToRadians(body[i].angle)) * segmentLength * tempMultiplier
         const segmentY3 = segmentY1 + Math.sin(baseAngle + degreesToRadians(body[i].angle)) * segmentLength * tempMultiplier
-        drawSegment({x: segmentX1, y: segmentY1}, {x: segmentX3, y: segmentY3}, wormColor)
         const segmentX4 = segmentX2 - Math.cos(baseAngle + degreesToRadians(body[i].angle)) * segmentLength * tempMultiplier
         const segmentY4 = segmentY2 - Math.sin(baseAngle + degreesToRadians(body[i].angle)) * segmentLength * tempMultiplier
+        
+        drawSegment({x: segmentX1, y: segmentY1}, {x: segmentX2, y: segmentY2}, wormColor)
+        drawSegment({x: segmentX1, y: segmentY1}, {x: segmentX3, y: segmentY3}, wormColor)
         drawSegment({x: segmentX4, y: segmentY4}, {x: segmentX2, y: segmentY2}, wormColor)
+
+        drawDot({x: segmentX1, y: segmentY1}, dotRadius, wormColor)
+        drawDot({x: segmentX2, y: segmentY2}, dotRadius, wormColor)
+        drawDot({x: segmentX3, y: segmentY3}, dotRadius, "red")
+        drawDot({x: segmentX4, y: segmentY4}, dotRadius, "cyan")
 
     }
 }
