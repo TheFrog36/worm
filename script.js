@@ -139,7 +139,7 @@ function drawPoints(){
         drawDot(body[i].point, dotRadius, wormColor)
         if(i == 0 || i == body.length-1) continue
         const baseAngle = calculateAngle(body[i-1].point, body[i+1].point) + Math.PI / 2 + degreesToRadians(body[i].angle)
-        const dum = bounceNumber(-maxAngle, maxAngle, body[i].angle + body[i].sign * initialAngleDiff / 2.2, body[i].sign)
+        const dum = bounceNumber(-maxAngle, maxAngle, body[i].angle + body[i].sign * initialAngleDiff / 1.5, body[i].sign)
         body[i].angle = dum.value
         body[i].sign = dum.sign
         const tempMultiplier = 2
