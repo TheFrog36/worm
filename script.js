@@ -17,8 +17,8 @@ const ctx = canvas.getContext("2d")
 const wormColor="white"
 const dotRadius = 2
 const segments = 40
-const segmentLength = 20
-const speed = 15
+const segmentLength = 10
+const speed = 7.5
 const maxAngle = 30 // -15, 15
 const initialAngleDiff = 10
 const body = [] // {point:{x, y}, angle}[]
@@ -139,7 +139,7 @@ function drawPoints(){
         drawDot(body[i].point, dotRadius, wormColor)
         if(i == 0 || i == body.length-1) continue
         const baseAngle = calculateAngle(body[i-1].point, body[i+1].point) + Math.PI / 2 + degreesToRadians(body[i].angle)
-        const dum = bounceNumber(-maxAngle, maxAngle, body[i].angle + body[i].sign * initialAngleDiff / 3, body[i].sign)
+        const dum = bounceNumber(-maxAngle, maxAngle, body[i].angle + body[i].sign * initialAngleDiff / 2.2, body[i].sign)
         body[i].angle = dum.value
         body[i].sign = dum.sign
         const tempMultiplier = 2
