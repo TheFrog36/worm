@@ -19,9 +19,11 @@ const wormColor="white"
 const dotRadius = 2
 const segments = 100
 const segmentLength = 10
-const speed = 8
+const speed = 8.7
 const maxAngle =  45// -15, 15
 const initialAngleDiff = 10
+const tempMultiplier = 2
+
 const body = [] // {point:{x, y}, angle}[]
 
 const mainContainer = document.getElementById("main-container")
@@ -154,7 +156,6 @@ function drawPoints(){
         const dum = bounceNumber(-maxAngle, maxAngle, body[i].angle + angleToAdd, body[i].sign)
         body[i].angle = dum.value
         body[i].sign = dum.sign
-        const tempMultiplier = 2
         const segmentX1 = body[i].point.x + Math.cos(baseAngle) * segmentLength * tempMultiplier
         const segmentY1 = body[i].point.y + Math.sin(baseAngle) * segmentLength * tempMultiplier
         const segmentX2 = body[i].point.x - Math.cos(baseAngle) * segmentLength * tempMultiplier
